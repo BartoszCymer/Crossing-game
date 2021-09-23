@@ -43,7 +43,6 @@
                 this.y += this.speed;
             }
             moveX(xAmount){
-                //if(this.x<screenWidth-50)
                 this.x += this.speed;
             }
         }
@@ -73,7 +72,7 @@
 
         document.onkeydown = function(event){
             let keyPressed = event.keyCode;
-            if (keyPressed == 39){              //39 to odpowiednik prawej strzalki
+            if (keyPressed == 39){              
                 player.speed = player.maxSpeed;
             }else if (keyPressed == 37) {
                 player.speed = -player.maxSpeed;
@@ -103,11 +102,7 @@
 
             return rect1.x < rect2x2 && rect1x2 > rect2.x && rect1.y < rect2y2 && rect1y2 > rect2.y;
         }
-        /*var gameWon = function (rect1){
-            if (rect1.x >= screenWidth-50){
-            alert("You Won!")
-            }
-        }*/
+
 
             var draw = function () {
                 ctx.clearRect(0, 0, screenWidth, screenHeight);
@@ -117,13 +112,7 @@
                 enemies.forEach(function (element) {
                     ctx.drawImage(sprites.enemy, element.x, element.y);
                 });
-            //ctx.fillStyle=player.color;
-            //ctx.fillRect(player.x, player.y, player.width, player.height, player.speed);
-            //ctx.fillStyle=win.color;
-            //ctx.fillRect(win.x, win.y, win.width, win.height, win.speed)
-
-                //ctx.fillStyle = element.color;
-                //ctx.fillRect(element.x, element.y, element.width, element.height);
+            
             
 
         }
@@ -137,7 +126,6 @@
                 element.moveY()
             });
             player.moveX();
-            //gameWon(player);
             if (checkWin(player, goal)){
                 endGameLogic("You Win!");
             };
