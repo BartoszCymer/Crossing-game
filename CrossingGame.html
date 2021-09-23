@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Crossing Game</title>
+        <style type="text/css">
+        canvas {
+            border: 2px solid black;
+            background-color: red;
+        }
+        
+        </style>
+    </head>
+    <body>
+        <h1>Crossing Game</h1>
+
+        <canvas id='myCanvas' width='1000' height='500'></canvas>
+        
+        <script type="text/javascript">
+            var canvas = document.getElementById('myCanvas');
+            var ctx = canvas.getContext('2d');
+
+            let screenWidth = 1000;
+            let screenHeight = 500;
+            let width = 50;
+            var isGameLive = true;
+
+        class GameChar{
+            constructor(x, y, width, height, color,speed){
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.color = color;
+                this.speed = speed;
+                this.maxSpeed = 4;
+            }
+            moveY(yAmount){
+                
+                if (this.y > screenHeight - 100 || this.y < 50){
+                    this.speed = -this.speed;
+                }
+
+                this.y += this.speed;
+            }
+            moveX(xAmount){
+                //if(this.x<screenWidth-50)
+                this.x += this.speed;
+            }
+        }
+        var enemies=[
+        new GameChar(200, 225, width, width, "rgb(0,0,255", 2),
+        new GameChar(450, screenHeight - 100, width, width, "rgb(0,150,205)", 4),
+        new GameChar(700, 50, width, width, "rgb(0,125,125", 3),
+        ];
+        var goal = new GameChar(screenWidth-50, 200, 50, 50, "rgb(0,255,0)", 0)
+        var player = new GameChar(50, 200, width, width, "rgb(0,255,0)", 0)
+        var sprites = {};
+
+        var loadSprites = function() {
+
+            sprites.player = new Image();
+            sprites.player.src = 'images/hero.png';
+
+            sprites.background = new Image();
+            sprites.background.src = 'images/floor.png';
+
+            sprites.enemy = new Image();
+            sprites.enemy.src = 'images/enemy.png';
+
+            sprites.goal = new Image();
+            sprites.goal.src = 'images/chest.png';
+        }
+
+        document.onkeydown = function(event){
+            let keyPressed = event.keyCode;
+            if (keyPressed == 39){              //39 to odpowiednik prawej strzalki
+                player.speed = player.maxSpeed;
+            }else if (keyPressed == 37) {
+                player.speed = -player.maxSpeed;
+            }
+        };
+        
+        document.onkeyup = function (event) {
+            var keyPressed = event.keyCode;
+            if (keyPressed== 39 || keyPressed ==37){
+                        player.speed = 0
+                        }
+                        };
+        
+        var checkCollisions = function (rect1, rect2) {
+                let rect1x2 = rect1.x + rect1.width;
+                let rect2x2 = rect2.x + (rect2.width);
+                let rect1y2 = rect1.y + rect1.height;
+                let rect2y2 = rect2.y + (rect2.height);
+
+                return rect1.x < rect2x2 && rect1x2 > rect2.x && rect1.y < rect2y2 && rect1y2 > rect2.y;
+            }
+        var checkWin =function (rect1, rect2){
+                            let rect1x2 = rect1.x + rect1.width;
+            let rect2x2 = rect2.x + rect2.width;
+            let rect1y2 = rect1.y + rect1.height;
+            let rect2y2 = rect2.y + rect2.height;
+
+            return rect1.x < rect2x2 && rect1x2 > rect2.x && rect1.y < rect2y2 && rect1y2 > rect2.y;
+        }
+        /*var gameWon = function (rect1){
+            if (rect1.x >= screenWidth-50){
+            alert("You Won!")
+            }
+        }*/
+
+            var draw = function () {
+                ctx.clearRect(0, 0, screenWidth, screenHeight);
+                ctx.drawImage(sprites.background, 0, 0);
+                ctx.drawImage(sprites.player, player.x, player.y);
+                ctx.drawImage(sprites.goal, goal.x, goal.y);
+                enemies.forEach(function (element) {
+                    ctx.drawImage(sprites.enemy, element.x, element.y);
+                });
+            //ctx.fillStyle=player.color;
+            //ctx.fillRect(player.x, player.y, player.width, player.height, player.speed);
+            //ctx.fillStyle=win.color;
+            //ctx.fillRect(win.x, win.y, win.width, win.height, win.speed)
+
+                //ctx.fillStyle = element.color;
+                //ctx.fillRect(element.x, element.y, element.width, element.height);
+            
+
+        }
+
+        var update = function(){
+
+            enemies.forEach(function(element){
+                if (checkCollisions(player, element)){
+                    endGameLogic("Game Over!");
+                }
+                element.moveY()
+            });
+            player.moveX();
+            //gameWon(player);
+            if (checkWin(player, goal)){
+                endGameLogic("You Win!");
+            };
+        }
+        var endGameLogic = function(text){
+            isGameLive = false;
+            alert(text);
+            window.location = "";
+        }
+
+        var step = function(){
+            update();
+            draw();
+            if (isGameLive){
+            window.requestAnimationFrame(step);
+            }
+
+        }
+        loadSprites();
+        step();
+        </script>
+    </body>
+</html>
